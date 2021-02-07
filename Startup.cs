@@ -20,7 +20,11 @@ namespace RealTimeMap
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
+            
             services.AddControllersWithViews();
+            services.AddSignalR();
+            
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -56,6 +60,12 @@ namespace RealTimeMap
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapHub<Hubs.RealTimeMap>("/RealTimeMap");
+            });
+
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             });
 
             app.UseSpa(spa =>
